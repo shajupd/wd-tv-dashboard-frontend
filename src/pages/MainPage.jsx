@@ -1,16 +1,53 @@
+import { useNavigate } from "react-router-dom";
 import Card from "../Component/CardComponents/Card";
 import CardHeader from "../Component/CardComponents/CardHeader";
 import LineGraph from "../Component/LineGraph";
 import { MetricCard } from "../Component/Matrixcard";
+
 import { AppUtils } from "../utils/app.utils";
 import { CLIENTS_DATA } from "../utils/constants";
 
-console.log(CLIENTS_DATA);
+import { useClientScoreHistory } from "../hooks/api-hooks/useReports.hook";
+import { useEffect, useMemo, useState } from "react";
+import { useClientList } from "../hooks/api-hooks/useClients.hook";
 
 /* eslint-disable react/prop-types */
 const MainPage = () => {
+  const navigate = useNavigate();
+  const { data } = useClientList();
+
+  const [selectedClientId, setSelectedClientId] = useState(
+    data ? data[0]?._id : ""
+  );
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setSelectedClientId(data[0]._id);
+      const interval = setInterval(() => {
+        setSelectedClientId((prevId) => {
+          const currentIndex = data.findIndex(
+            (client) => client._id === (prevId || data[0]._id)
+          );
+          const nextIndex = (currentIndex + 1) % data.length;
+          return data[nextIndex]._id;
+        });
+      }, 10000); // 10 seconds
+
+      return () => clearInterval(interval); // Cleanup interval on component unmount
+    }
+  }, [data]);
+
   return (
     <div className="w-screen h-dvh bg-black border-black text-white overflow-auto flex flex-col items-center justify-center p-10 gap-6">
+      <button
+        onClick={() => {
+          navigate("/settings");
+        }}
+        className="absolute top-8 right-8 flex flex-col items-center justify-center text-gray-100"
+      >
+        <span className="material-icons">settings</span>
+      </button>
+
       <h1 className="text-4xl font-bold mb-4 text-center text-gray-100">
         Webdura Digital Marketing TV Dashboard
       </h1>
@@ -21,14 +58,17 @@ const MainPage = () => {
           </h2>
           <ClientList
             key={1}
-            selectedClientId={1}
+            selectedClientId={selectedClientId}
             clients={CLIENTS_DATA}
-            onSelectClient={() => {
-              console.log("Client selected");
+            onSelectClient={(e) => {
+              setSelectedClientId(e);
             }}
           />
         </div>
-        <ClientDashboard client={CLIENTS_DATA[0]} />
+        <ClientDashboard
+          client={CLIENTS_DATA[0]}
+          selectedClientId={selectedClientId}
+        />
       </div>
     </div>
   );
@@ -36,46 +76,86 @@ const MainPage = () => {
 
 export default MainPage;
 
-const ClientList = ({ clients, selectedClientId, onSelectClient }) => (
-  <div className="w-full">
-    {clients.map((client) => (
-      <div
-        key={client.id}
-        className={`flex justify-between items-center p-2 mb-2 rounded cursor-pointer ${
-          client.id === selectedClientId ? "bg-gray-700" : "hover:bg-gray-800"
-        }`}
-        onClick={() => onSelectClient(client.id)}
-      >
-        <span className="text-gray-300">{client.name}</span>
-        <div className="flex items-center">
-          {client.scoreHistory.map((score, index) => (
-            <div
-              key={index}
-              className={`w-6 h-6 rounded-full ml-1 ${AppUtils.getScoreColor(
-                score
-              )}`}
-              title={`Month ${index + 1}: ${score}`}
-            />
-          ))}
-          <span
-            className={`ml-2 font-bold ${AppUtils.getScoreTextColor(
-              client.currentScore
-            )}`}
-          >
-            {client.currentScore}
-          </span>
-        </div>
-      </div>
-    ))}
-  </div>
-);
+const ClientList = ({ selectedClientId, onSelectClient }) => {
+  const { data, isLoading } = useClientScoreHistory();
+  console.log("🚀 ~ ClientList ~ data:", data);
 
-const ClientDashboard = ({ client }) => {
+  return (
+    <div className="w-full">
+      {isLoading
+        ? "Loading..."
+        : data.map((eachReport) => (
+            <div
+              key={eachReport?.client.id}
+              className={`flex justify-between items-center p-2 mb-2 rounded cursor-pointer ${
+                eachReport?.client._id === selectedClientId
+                  ? "bg-gray-700"
+                  : "hover:bg-gray-800"
+              }`}
+              onClick={() => onSelectClient(eachReport?.client._id)}
+            >
+              <span className="text-gray-300">{eachReport?.client.name}</span>
+              <div className="flex items-center">
+                {eachReport?.client.scoreHistory?.map((score, index) => (
+                  <div
+                    key={index}
+                    className={`w-6 h-6 rounded-full ml-1 ${AppUtils.getScoreColor(
+                      score
+                    )}`}
+                    title={`Month ${index + 1}: ${score}`}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+      {/* {clients.map((client) => (
+        <div
+          key={client.id}
+          className={`flex justify-between items-center p-2 mb-2 rounded cursor-pointer ${
+            client.id === selectedClientId ? "bg-gray-700" : "hover:bg-gray-800"
+          }`}
+          onClick={() => onSelectClient(client.id)}
+        >
+          <span className="text-gray-300">{client.name}</span>
+          <div className="flex items-center">
+            {client.scoreHistory.map((score, index) => (
+              <div
+                key={index}
+                className={`w-6 h-6 rounded-full ml-1 ${AppUtils.getScoreColor(
+                  score
+                )}`}
+                title={`Month ${index + 1}: ${score}`}
+              />
+            ))}
+            <span
+              className={`ml-2 font-bold ${AppUtils.getScoreTextColor(
+                client.currentScore
+              )}`}
+            >
+              {client.currentScore}
+            </span>
+          </div>
+        </div>
+      ))} */}
+    </div>
+  );
+};
+
+const ClientDashboard = ({ client, selectedClientId }) => {
+  const { data } = useClientScoreHistory();
   const totalScore = AppUtils.calculateTotalScore(client);
+
+  const activeData = useMemo(() => {
+    return data?.find((eachReport) => {
+      return eachReport?.client._id === selectedClientId;
+    });
+  }, [data, selectedClientId]);
 
   return (
     <div className="p-4 bg-gray-900 rounded-lg border border-gray-700 w-full h-full flex flex-col items-start">
-      <h2 className="text-2xl font-bold mb-4 text-gray-100">{client.name}</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-100">
+        {activeData?.client?.name}
+      </h2>
       <div className="flex flex-row gap-3mb-4 w-full">
         <Card className="col-span-1 bg-gray-800 border-gray-700 w-2/6">
           <CardHeader className="p-2">
@@ -102,25 +182,34 @@ const ClientDashboard = ({ client }) => {
             Marketing
           </h3>
           <div className="grid gap-2">
-            <MetricCard title="CPL (Monthly)" value={client.marketing.cpl} />
+            <MetricCard
+              title="CPL (Monthly)"
+              value={activeData?.currentMonthScore?.cpl}
+            />
             <MetricCard
               title="Quality Lead % (Monthly)"
-              value={client.marketing.qualityLead}
+              value={activeData?.currentMonthScore?.qualityLead}
             />
-            <MetricCard title="CAC" value={client.marketing.cac} />
+            <MetricCard
+              title="CAC"
+              value={activeData?.currentMonthScore?.cac}
+            />
           </div>
         </div>
         <div>
           <h3 className="text-lg font-semibold mb-2 text-gray-300">Finance</h3>
           <div className="grid gap-2">
-            <MetricCard title="Pay on Time" value={client.finance.payOnTime} />
+            <MetricCard
+              title="Pay on Time"
+              value={activeData?.currentMonthScore?.payOnTime}
+            />
             <MetricCard
               title="Budget Utilization"
-              value={client.finance.budgetUtilization}
+              value={activeData?.currentMonthScore?.budgetUtilization}
             />
             <MetricCard
               title="Client Profitability"
-              value={client.finance.clientProfitability}
+              value={activeData?.currentMonthScore?.clientProfitability}
             />
           </div>
         </div>
@@ -131,15 +220,15 @@ const ClientDashboard = ({ client }) => {
           <div className="grid gap-2">
             <MetricCard
               title="Meeting Attendance"
-              value={client.engagement.meetingAttendance}
+              value={activeData?.currentMonthScore?.meetingAttendance}
             />
             <MetricCard
               title="Client Support Response"
-              value={client.engagement.clientSupportResponse}
+              value={activeData?.currentMonthScore?.clientSupportResponse}
             />
             <MetricCard
               title="Approval Time"
-              value={client.engagement.approvalTime}
+              value={activeData?.currentMonthScore?.approvalTime}
             />
           </div>
         </div>
