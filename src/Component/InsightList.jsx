@@ -161,6 +161,7 @@ const ImportModal = ({ open, setOpen }) => {
         obj.cac = currentLine[9];
         obj.clientProfitability = currentLine[10];
         obj.approvalTime = currentLine[11];
+        obj.overallScore = currentLine[12];
         json.push(obj);
       }
 
@@ -181,8 +182,10 @@ const ImportModal = ({ open, setOpen }) => {
     const year = new Date().getFullYear();
 
     const monthYear = `${month} ${year}`;
-    const csv = `clientName,clientId,month,cpl,payOnTime,meetingAttendance,qualityLeads,budgetUtilization,clientSupportResponse,cac,clientProfitability,approvalTime\n${clientList
-      .map((item) => `${item.name},${item._id},${monthYear},0,0,0,0,0,0,0,0,0`)
+    const csv = `clientName,clientId,month,cpl,payOnTime,meetingAttendance,qualityLeads,budgetUtilization,clientSupportResponse,cac,clientProfitability,approvalTime,overallScore\n${clientList
+      .map(
+        (item) => `${item.name},${item._id},${monthYear},0,0,0,0,0,0,0,0,0,0`
+      )
       .join("\n")}`;
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);

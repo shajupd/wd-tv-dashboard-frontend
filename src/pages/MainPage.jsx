@@ -96,11 +96,11 @@ const ClientList = ({ selectedClientId, onSelectClient }) => {
             >
               <span className="text-gray-300">{eachReport?.client.name}</span>
               <div className="flex items-center">
-                {eachReport?.client.scoreHistory?.map((score, index) => (
+                {eachReport?.scores?.map((score, index) => (
                   <div
                     key={index}
                     className={`w-6 h-6 rounded-full ml-1 ${AppUtils.getScoreColor(
-                      score
+                      score?.overallScore
                     )}`}
                     title={`Month ${index + 1}: ${score}`}
                   />
@@ -141,15 +141,28 @@ const ClientList = ({ selectedClientId, onSelectClient }) => {
   );
 };
 
-const ClientDashboard = ({ client, selectedClientId }) => {
+const ClientDashboard = ({ selectedClientId }) => {
   const { data } = useClientScoreHistory();
-  const totalScore = AppUtils.calculateTotalScore(client);
-
   const activeData = useMemo(() => {
     return data?.find((eachReport) => {
       return eachReport?.client._id === selectedClientId;
     });
   }, [data, selectedClientId]);
+
+  const lineGraphData = useMemo(() => {
+    let labels = [];
+    let values = [];
+
+    if (activeData && activeData?.scores?.length > 0) {
+      labels = activeData?.scores.map((score) => score?.month);
+      values = activeData?.scores.map((score) => score?.overallScore);
+    }
+
+    return {
+      labels: labels?.reverse(),
+      values: values?.reverse(),
+    };
+  }, [activeData]);
 
   return (
     <div className="p-4 bg-gray-900 rounded-lg border border-gray-700 w-full h-full flex flex-col items-start">
@@ -164,15 +177,15 @@ const ClientDashboard = ({ client, selectedClientId }) => {
           <div className="p-2">
             <p
               className={`text-4xl font-bold ${AppUtils.getScoreTextColor(
-                totalScore
+                activeData?.currentMonthScore?.overallScore
               )}`}
             >
-              {totalScore}/100
+              {activeData?.currentMonthScore?.overallScore}/100
             </p>
           </div>
         </Card>
         <div className="w-full">
-          <LineGraph />
+          <LineGraph data={lineGraphData} />
         </div>
       </div>
 

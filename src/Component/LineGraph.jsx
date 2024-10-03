@@ -8,16 +8,17 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-import { CLIENTS_DATA } from "../utils/constants";
 
-const LineGraph = () => {
+const LineGraph = ({ data: { labels, values } }) => {
   return (
     <ResponsiveContainer width="100%" height={200} className={"w-full"}>
       <LineChart
-        data={CLIENTS_DATA[0].scoreHistory.map((score, index) => ({
-          month: ["May", "Jun", "Jul"][index],
-          score,
-        }))}
+        data={
+          labels.map((label, index) => ({
+            month: label,
+            score: values[index],
+          })) || []
+        }
         margin={{ top: 30, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" stroke="#4a5568" />
