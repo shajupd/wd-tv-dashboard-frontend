@@ -50,11 +50,11 @@ const MainPage = () => {
       </button>
 
       <h1 className="text-4xl font-bold mb-4 text-center text-gray-100">
-        <span className="animate-pulse ">❤️</span> Webdura Customer Health Score
+        <span className="animate-pulse ">❤️</span> Customer Health Score
       </h1>
       <div className="flex flex-row items-start justify-center w-full h-full gap-5">
-        <div className="w-4/12 bg-gray-900 p-4 rounded-lg border border-gray-700 h-full flex flex-col items-start justify-start">
-          <h2 className="text-xl font-bold mb-4 text-gray-100">
+        <div className="w-4/12 bg-gray-900 p-0 rounded-lg border border-gray-700 h-full flex flex-col items-start justify-start">
+          <h2 className="text-3xl font-bold mb-5 text-gray-100 border-b-[1px] border-gray-500 p-7 w-full">
             Client Scores
           </h2>
           <ClientList
@@ -79,28 +79,29 @@ export default MainPage;
 
 const ClientList = ({ selectedClientId, onSelectClient }) => {
   const { data, isLoading } = useClientScoreHistory();
-  console.log("🚀 ~ ClientList ~ data:", data);
 
   return (
-    <div className="w-full">
+    <div className="w-full p-4 pt-0">
       {isLoading
         ? "Loading..."
         : data.map((eachReport) => (
             <div
               key={eachReport?.client.id}
-              className={`flex justify-between items-center p-2 mb-2 rounded cursor-pointer ${
+              className={`flex justify-between items-center p-4 mb-0 rounded-lg cursor-pointer ${
                 eachReport?.client._id === selectedClientId
                   ? "bg-gray-700"
                   : "hover:bg-gray-800"
               }`}
               onClick={() => onSelectClient(eachReport?.client._id)}
             >
-              <span className="text-gray-300">{eachReport?.client.name}</span>
-              <div className="flex items-center">
+              <span className="text-gray-300 text-xl text-start">
+                {eachReport?.client.name}
+              </span>
+              <div className="flex items-center gap-1">
                 {eachReport?.scores?.map((score, index) => (
                   <div
                     key={index}
-                    className={`w-8 h-8 rounded-full ml-1 text-[12px] flex items-center justify-center ${AppUtils.getScoreColorOverall(
+                    className={`w-10 aspect-square rounded-full ml-1 text-[15px] flex items-center justify-center ${AppUtils.getScoreColorOverall(
                       score?.overallScore
                     )}`}
                     title={`Month ${index + 1}: ${score}`}
@@ -177,18 +178,18 @@ const ClientDashboard = ({ selectedClientId }) => {
 
   return (
     <div className="p-4 bg-gray-900 rounded-lg border border-gray-700 w-full h-full flex flex-col items-start">
-      <h2 className="text-2xl font-bold mb-4 text-gray-100">
+      <h2 className="text-3xl font-bold mb-4 text-gray-100">
         {activeData?.client?.name} ({" "}
         {dayjs().subtract(1, "month").format("MMM YYYY")} )
       </h2>
       <div className="flex flex-row gap-3mb-4 w-full">
         <Card className="col-span-1 bg-gray-800 border-gray-700 w-2/6">
           <CardHeader className="p-2">
-            <div className="text-lg text-gray-300">Overall Score</div>
+            <div className="text-xl text-gray-300">Overall Score</div>
           </CardHeader>
           <div className="p-2">
             <p
-              className={`text-4xl font-bold ${AppUtils.getScoreTextColorOverall(
+              className={`text-6xl font-bold ${AppUtils.getScoreTextColorOverall(
                 visibleData?.overallScore
               )}`}
             >
@@ -196,14 +197,14 @@ const ClientDashboard = ({ selectedClientId }) => {
             </p>
           </div>
         </Card>
-        <div className="w-full">
+        <div className="w-full text-xl">
           <LineGraph data={lineGraphData} />
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-4 w-full mt-8">
         <div>
-          <h3 className="text-lg font-semibold mb-2 text-gray-300">
+          <h3 className="text-2xl font-semibold mb-2 text-gray-300">
             Marketing
           </h3>
           <div className="grid gap-2">
@@ -216,7 +217,7 @@ const ClientDashboard = ({ selectedClientId }) => {
           </div>
         </div>
         <div>
-          <h3 className="text-lg font-semibold mb-2 text-gray-300">Finance</h3>
+          <h3 className="text-2xl font-semibold mb-2 text-gray-300">Finance</h3>
           <div className="grid gap-2">
             <MetricCard title="Pay on Time" value={visibleData?.payOnTime} />
             <MetricCard
@@ -230,7 +231,7 @@ const ClientDashboard = ({ selectedClientId }) => {
           </div>
         </div>
         <div>
-          <h3 className="text-lg font-semibold mb-2 text-gray-300">
+          <h3 className="text-2xl font-semibold mb-2 text-gray-300">
             Engagement
           </h3>
           <div className="grid gap-2">
