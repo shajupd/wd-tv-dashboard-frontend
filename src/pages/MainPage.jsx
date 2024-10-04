@@ -179,7 +179,7 @@ const ClientDashboard = ({ selectedClientId }) => {
     <div className="p-4 bg-gray-900 rounded-lg border border-gray-700 w-full h-full flex flex-col items-start">
       <h2 className="text-2xl font-bold mb-4 text-gray-100">
         {activeData?.client?.name} ({" "}
-        {dayjs().subtract(1, "month").format("MMM YYYY")})
+        {dayjs().subtract(1, "month").format("MMM YYYY")} )
       </h2>
       <div className="flex flex-row gap-3mb-4 w-full">
         <Card className="col-span-1 bg-gray-800 border-gray-700 w-2/6">
