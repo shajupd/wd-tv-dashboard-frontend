@@ -210,7 +210,7 @@ const ClientDashboard = ({ selectedClientId }) => {
           <h3 className="text-2xl font-semibold mb-2 text-gray-300">
             Marketing
           </h3>
-          <div className="grid gap-2">
+          <div className="grid gap-4">
             <MetricCard title="CPL (Monthly)" value={visibleData?.cpl} />
             <MetricCard
               title="Quality Lead % (Monthly)"
@@ -221,7 +221,7 @@ const ClientDashboard = ({ selectedClientId }) => {
         </div>
         <div>
           <h3 className="text-2xl font-semibold mb-2 text-gray-300">Finance</h3>
-          <div className="grid gap-2">
+          <div className="grid gap-4">
             <MetricCard title="Pay on Time" value={visibleData?.payOnTime} />
             <MetricCard
               title="Budget Utilization"
@@ -237,7 +237,7 @@ const ClientDashboard = ({ selectedClientId }) => {
           <h3 className="text-2xl font-semibold mb-2 text-gray-300">
             Engagement
           </h3>
-          <div className="grid gap-2">
+          <div className="grid gap-4">
             <MetricCard
               title="Meeting Attendance"
               value={visibleData?.meetingAttendance}
