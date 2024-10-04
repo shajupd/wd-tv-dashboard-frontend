@@ -10,6 +10,7 @@ import { CLIENTS_DATA } from "../utils/constants";
 import { useClientScoreHistory } from "../hooks/api-hooks/useReports.hook";
 import { useEffect, useMemo, useState } from "react";
 import { useClientList } from "../hooks/api-hooks/useClients.hook";
+import dayjs from "dayjs";
 
 /* eslint-disable react/prop-types */
 const MainPage = () => {
@@ -99,11 +100,13 @@ const ClientList = ({ selectedClientId, onSelectClient }) => {
                 {eachReport?.scores?.map((score, index) => (
                   <div
                     key={index}
-                    className={`w-6 h-6 rounded-full ml-1 ${AppUtils.getScoreColor(
+                    className={`w-8 h-8 rounded-full ml-1 text-[12px] flex items-center justify-center ${AppUtils.getScoreColorOverall(
                       score?.overallScore
                     )}`}
                     title={`Month ${index + 1}: ${score}`}
-                  />
+                  >
+                    {score?.month.split(" ")[0]}
+                  </div>
                 ))}
               </div>
             </div>
@@ -155,7 +158,7 @@ const ClientDashboard = ({ selectedClientId }) => {
 
     if (activeData && activeData?.scores?.length > 0) {
       labels = activeData?.scores.map((score) => score?.month);
-      values = activeData?.scores.map((score) => score?.overallScore);
+      values = activeData?.scores.map((score) => score?.overallScore || 0);
     }
 
     return {
@@ -164,10 +167,19 @@ const ClientDashboard = ({ selectedClientId }) => {
     };
   }, [activeData]);
 
+  const visibleData = useMemo(() => {
+    if (activeData) {
+      const prevMonth = dayjs().subtract(1, "month").format("MMM YYYY");
+      return activeData?.scores.find((score) => score?.month === prevMonth);
+    }
+    return null;
+  }, [activeData]);
+
   return (
     <div className="p-4 bg-gray-900 rounded-lg border border-gray-700 w-full h-full flex flex-col items-start">
       <h2 className="text-2xl font-bold mb-4 text-gray-100">
-        {activeData?.client?.name}
+        {activeData?.client?.name} ({" "}
+        {dayjs().subtract(1, "month").format("MMM YYYY")})
       </h2>
       <div className="flex flex-row gap-3mb-4 w-full">
         <Card className="col-span-1 bg-gray-800 border-gray-700 w-2/6">
@@ -176,11 +188,11 @@ const ClientDashboard = ({ selectedClientId }) => {
           </CardHeader>
           <div className="p-2">
             <p
-              className={`text-4xl font-bold ${AppUtils.getScoreTextColor(
-                activeData?.currentMonthScore?.overallScore
+              className={`text-4xl font-bold ${AppUtils.getScoreTextColorOverall(
+                visibleData?.overallScore
               )}`}
             >
-              {activeData?.currentMonthScore?.overallScore}/100
+              {visibleData?.overallScore}/100
             </p>
           </div>
         </Card>
@@ -195,34 +207,25 @@ const ClientDashboard = ({ selectedClientId }) => {
             Marketing
           </h3>
           <div className="grid gap-2">
-            <MetricCard
-              title="CPL (Monthly)"
-              value={activeData?.currentMonthScore?.cpl}
-            />
+            <MetricCard title="CPL (Monthly)" value={visibleData?.cpl} />
             <MetricCard
               title="Quality Lead % (Monthly)"
-              value={activeData?.currentMonthScore?.qualityLead}
+              value={visibleData?.qualityLead}
             />
-            <MetricCard
-              title="CAC"
-              value={activeData?.currentMonthScore?.cac}
-            />
+            <MetricCard title="CAC" value={visibleData?.cac} />
           </div>
         </div>
         <div>
           <h3 className="text-lg font-semibold mb-2 text-gray-300">Finance</h3>
           <div className="grid gap-2">
-            <MetricCard
-              title="Pay on Time"
-              value={activeData?.currentMonthScore?.payOnTime}
-            />
+            <MetricCard title="Pay on Time" value={visibleData?.payOnTime} />
             <MetricCard
               title="Budget Utilization"
-              value={activeData?.currentMonthScore?.budgetUtilization}
+              value={visibleData?.budgetUtilization}
             />
             <MetricCard
               title="Client Profitability"
-              value={activeData?.currentMonthScore?.clientProfitability}
+              value={visibleData?.clientProfitability}
             />
           </div>
         </div>
@@ -233,15 +236,15 @@ const ClientDashboard = ({ selectedClientId }) => {
           <div className="grid gap-2">
             <MetricCard
               title="Meeting Attendance"
-              value={activeData?.currentMonthScore?.meetingAttendance}
+              value={visibleData?.meetingAttendance}
             />
             <MetricCard
               title="Client Support Response"
-              value={activeData?.currentMonthScore?.clientSupportResponse}
+              value={visibleData?.clientSupportResponse}
             />
             <MetricCard
               title="Approval Time"
-              value={activeData?.currentMonthScore?.approvalTime}
+              value={visibleData?.approvalTime}
             />
           </div>
         </div>
