@@ -49,6 +49,10 @@ const MainPage = () => {
         <span className="material-icons">settings</span>
       </button>
 
+      <div className="absolute top-8 left-12 flex flex-col items-center justify-center text-gray-100 text-3xl">
+        {dayjs().subtract(1, "month").format("MMMM YYYY")}
+      </div>
+
       <h1 className="text-4xl font-bold mb-4 text-center text-gray-100">
         <span className="animate-pulse ">❤️</span> Customer Health Score
       </h1>
@@ -177,10 +181,9 @@ const ClientDashboard = ({ selectedClientId }) => {
   }, [activeData]);
 
   return (
-    <div className="p-4 bg-gray-900 rounded-lg border border-gray-700 w-full h-full flex flex-col items-start">
+    <div className="p-8 bg-gray-900 rounded-lg border border-gray-700 w-full h-full flex flex-col items-start gap-5">
       <h2 className="text-3xl font-bold mb-4 text-gray-100">
-        {activeData?.client?.name} ({" "}
-        {dayjs().subtract(1, "month").format("MMM YYYY")} )
+        {activeData?.client?.name}
       </h2>
       <div className="flex flex-row gap-3mb-4 w-full">
         <Card className="col-span-1 bg-gray-800 border-gray-700 w-2/6">
