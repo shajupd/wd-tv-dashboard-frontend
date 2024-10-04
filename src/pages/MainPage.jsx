@@ -50,7 +50,7 @@ const MainPage = () => {
       </button>
 
       <h1 className="text-4xl font-bold mb-4 text-center text-gray-100">
-        Webdura Digital Marketing TV Dashboard
+        <span className="animate-pulse ">❤️</span> Webdura Customer Health Score
       </h1>
       <div className="flex flex-row items-start justify-center w-full h-full gap-5">
         <div className="w-4/12 bg-gray-900 p-4 rounded-lg border border-gray-700 h-full flex flex-col items-start justify-start">
