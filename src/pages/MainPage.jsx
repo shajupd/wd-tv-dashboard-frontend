@@ -33,7 +33,7 @@ const MainPage = () => {
           const nextIndex = (currentIndex + 1) % data.length;
           return data[nextIndex]._id;
         });
-      }, 2000); // 10 seconds
+      }, 10000); // 10 seconds
 
       return () => clearInterval(interval); // Cleanup interval on component unmount
     }
