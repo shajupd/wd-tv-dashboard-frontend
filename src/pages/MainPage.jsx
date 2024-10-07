@@ -8,12 +8,13 @@ import { AppUtils } from "../utils/app.utils";
 import { CLIENTS_DATA } from "../utils/constants";
 
 import { useClientScoreHistory } from "../hooks/api-hooks/useReports.hook";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useClientList } from "../hooks/api-hooks/useClients.hook";
 import dayjs from "dayjs";
 
 /* eslint-disable react/prop-types */
 const MainPage = () => {
+  const scrollRef = useRef(null);
   const navigate = useNavigate();
   const { data } = useClientList();
 
@@ -32,11 +33,36 @@ const MainPage = () => {
           const nextIndex = (currentIndex + 1) % data.length;
           return data[nextIndex]._id;
         });
-      }, 10000); // 10 seconds
+      }, 2000); // 10 seconds
 
       return () => clearInterval(interval); // Cleanup interval on component unmount
     }
   }, [data]);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      const scrollToClient = () => {
+        const clientElement = document.getElementById(selectedClientId);
+        if (clientElement) {
+          const containerRect = scrollRef.current.getBoundingClientRect();
+          const clientRect = clientElement.getBoundingClientRect();
+          const scrollPosition =
+            clientRect.top -
+            containerRect.top +
+            scrollRef.current.scrollTop -
+            containerRect.height / 2 +
+            clientRect.height / 2;
+
+          scrollRef.current.scrollTo({
+            top: scrollPosition,
+            behavior: "smooth",
+          });
+        }
+      };
+
+      scrollToClient();
+    }
+  }, [selectedClientId]);
 
   return (
     <div className="w-screen h-dvh bg-black border-black text-white overflow-auto flex flex-col items-center justify-center p-10 gap-6">
@@ -57,11 +83,12 @@ const MainPage = () => {
         <span className="animate-pulse ">❤️</span> Customer Health Score
       </h1>
       <div className="flex flex-row items-start justify-center w-full h-full gap-5">
-        <div className="w-4/12 bg-gray-900 p-0 rounded-lg border border-gray-700 h-full flex flex-col items-start justify-start">
+        <div className="w-5/12 bg-gray-900 p-0 rounded-lg border border-gray-700 h-full flex flex-col items-start justify-start">
           <h2 className="text-3xl font-bold mb-5 text-gray-100 border-b-[1px] border-gray-500 p-7 w-full">
             Client Scores
           </h2>
           <ClientList
+            scrollRef={scrollRef}
             key={1}
             selectedClientId={selectedClientId}
             clients={CLIENTS_DATA}
@@ -81,15 +108,19 @@ const MainPage = () => {
 
 export default MainPage;
 
-const ClientList = ({ selectedClientId, onSelectClient }) => {
+const ClientList = ({ selectedClientId, onSelectClient, scrollRef }) => {
   const { data, isLoading } = useClientScoreHistory();
 
   return (
-    <div className="w-full p-4 pt-0">
+    <div
+      className="w-full p-4 pt-0 overflow-auto custom-scroll"
+      ref={scrollRef}
+    >
       {isLoading
         ? "Loading..."
         : data.map((eachReport) => (
             <div
+              id={eachReport?.client.id}
               key={eachReport?.client.id}
               className={`flex justify-between items-center p-4 mb-0 rounded-lg cursor-pointer ${
                 eachReport?.client._id === selectedClientId
@@ -98,7 +129,12 @@ const ClientList = ({ selectedClientId, onSelectClient }) => {
               }`}
               onClick={() => onSelectClient(eachReport?.client._id)}
             >
-              <span className="text-gray-300 text-xl text-start">
+              <span className="text-gray-300 text-xl text-start flex flex-row items-center gap-5">
+                <img
+                  className="h-10 object-contain aspect-square bg-white rounded-2xl p-1"
+                  src={eachReport?.client?.imageUrl}
+                  alt=""
+                />
                 {eachReport?.client.name}
               </span>
               <div className="flex items-center gap-1">
@@ -182,7 +218,12 @@ const ClientDashboard = ({ selectedClientId }) => {
 
   return (
     <div className="p-8 bg-gray-900 rounded-lg border border-gray-700 w-full h-full flex flex-col items-start gap-5">
-      <h2 className="text-3xl font-bold mb-4 text-gray-100">
+      <h2 className="text-3xl font-bold mb-4 text-gray-100 flex flex-row items-center gap-5">
+        <img
+          className="h-14 object-contain aspect-square bg-white rounded-2xl p-1"
+          src={activeData?.client?.imageUrl}
+          alt=""
+        />
         {activeData?.client?.name}
       </h2>
       <div className="flex flex-row gap-3mb-4 w-full">

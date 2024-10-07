@@ -87,3 +87,17 @@ button:focus-visible {
   /* Support for IE. */
   font-feature-settings: "liga";
 }
+
+.custom-scroll::-webkit-scrollbar {
+  width: 0.2rem;
+  border-radius: 1rem;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
