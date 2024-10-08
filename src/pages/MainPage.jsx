@@ -65,22 +65,22 @@ const MainPage = () => {
   }, [selectedClientId]);
 
   return (
-    <div className="w-screen h-dvh bg-black border-black text-white overflow-auto flex flex-col items-center justify-center p-10 gap-6">
-      <button
-        onClick={() => {
-          navigate("/settings");
-        }}
-        className="absolute top-8 right-8 flex flex-col items-center justify-center text-gray-100"
-      >
-        <span className="material-icons">settings</span>
-      </button>
-
-      <div className="absolute top-8 left-12 flex flex-col items-center justify-center text-gray-100 text-3xl">
-        {dayjs().subtract(1, "month").format("MMMM YYYY")}
-      </div>
-
-      <h1 className="text-4xl font-bold mb-4 text-center text-gray-100">
-        <span className="animate-pulse ">❤️</span> Customer Health Score
+    <div className="w-screen h-dvh bg-black border-black text-white overflow-auto flex flex-col items-center justify-center p-10 gap-3">
+      <h1 className="text-4xl font-bold mb-4 text-center text-gray-100 flex flex-row items-center justify-between gap-5 w-full mt-5">
+        <div className="flex flex-col items-center justify-center text-gray-100 text-3xl">
+          {dayjs().subtract(1, "month").format("MMMM YYYY")}
+        </div>
+        <span>
+          <span className="animate-pulse ">❤️</span> Customer Health Score
+        </span>
+        <button
+          onClick={() => {
+            navigate("/settings");
+          }}
+          className="flex flex-col items-center justify-center text-gray-100 h-10 aspect-square w-10"
+        >
+          <span className="material-icons">settings</span>
+        </button>
       </h1>
       <div className="flex flex-row items-start justify-center w-full h-full gap-5">
         <div className="w-5/12 bg-gray-900 p-0 rounded-lg border border-gray-700 h-full flex flex-col items-start justify-start">
@@ -97,10 +97,32 @@ const MainPage = () => {
             }}
           />
         </div>
-        <ClientDashboard
-          client={CLIENTS_DATA[0]}
-          selectedClientId={selectedClientId}
-        />
+        <div className="w-full flex flex-col items-start justify-start gap-4">
+          <ClientDashboard
+            client={CLIENTS_DATA[0]}
+            selectedClientId={selectedClientId}
+          />
+          <div className=" bg-gray-900 rounded-lg border border-gray-700 w-full h-full flex flex-row items-center gap-10">
+            <div className="bg-red-500 p-6 rounded-lg text-2xl rounded-tr-none rounded-br-none">
+              Last month
+            </div>
+
+            <div className="flex flex-row items-center justify-center gap-16">
+              <div className="text-2xl">
+                <b>Poor Health - </b>
+                <span>2 (10%)</span>
+              </div>
+              <div className="text-2xl">
+                <b>Avg Health - </b>
+                <span>4 (15%)</span>
+              </div>
+              <div className="text-2xl">
+                <b>Good Health - </b>
+                <span>1 (8%)</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
