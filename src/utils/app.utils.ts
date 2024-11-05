@@ -1,6 +1,6 @@
 export class AppUtils {
     static getScoreColor = (score: number) => {
-        if (!score) return 'border border-gray-500'
+        if (!score || score == -1) return 'border border-gray-500'
         if (score >= 25) return 'bg-green-500'
         if (score >= 20) return 'bg-green-400'
         if (score >= 15) return 'bg-yellow-500'
@@ -9,7 +9,7 @@ export class AppUtils {
     }
 
     static getScoreColorOverall = (score: number) => {
-        if (!score) return 'border border-gray-500'
+        if (!score || score == -1) return 'border border-gray-500'
         if (score >= 90) return 'bg-green-500'
         if (score >= 80) return 'bg-green-400'
         if (score >= 70) return 'bg-yellow-500'
@@ -19,6 +19,7 @@ export class AppUtils {
     }
 
     static getScoreTextColor = (score: number) => {
+        if (!score || score == -1) return 'text-gray-500'
         if (score >= 25) return 'text-green-500'
         if (score >= 20) return 'text-green-400'
         if (score >= 15) return 'text-yellow-500'
@@ -26,6 +27,7 @@ export class AppUtils {
     }
 
     static getScoreTextColorOverall = (score: number) => {
+        if (!score || score == -1) return 'text-gray-500'
         if (score >= 90) return 'text-green-500'
         if (score >= 80) return 'text-green-400'
         if (score >= 70) return 'text-yellow-500'

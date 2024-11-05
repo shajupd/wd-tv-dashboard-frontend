@@ -132,6 +132,8 @@ export default MainPage;
 
 const ClientList = ({ selectedClientId, onSelectClient, scrollRef }) => {
   const { data, isLoading } = useClientScoreHistory();
+ 
+ 
 
   return (
     <div
@@ -170,7 +172,7 @@ const ClientList = ({ selectedClientId, onSelectClient, scrollRef }) => {
                   >
                     {score?.month.split(" ")[0]}
                   </div>
-                ))}
+                )).reverse()}
               </div>
             </div>
           ))}
@@ -209,6 +211,7 @@ const ClientList = ({ selectedClientId, onSelectClient, scrollRef }) => {
 
 const ClientDashboard = ({ selectedClientId }) => {
   const { data } = useClientScoreHistory();
+  console.log("🚀 ~ ClientDashboard ~ data:", data)
   const activeData = useMemo(() => {
     return data?.find((eachReport) => {
       return eachReport?.client._id === selectedClientId;
@@ -232,7 +235,7 @@ const ClientDashboard = ({ selectedClientId }) => {
 
   const visibleData = useMemo(() => {
     if (activeData) {
-      const prevMonth = dayjs().subtract(1, "month").format("MMM YYYY");
+      const prevMonth = dayjs().subtract(2, "month").format("MMM YYYY");
       return activeData?.scores.find((score) => score?.month === prevMonth);
     }
     return null;
@@ -277,7 +280,7 @@ const ClientDashboard = ({ selectedClientId }) => {
             <MetricCard title="CPL (Monthly)" value={visibleData?.cpl} />
             <MetricCard
               title="Quality Lead % (Monthly)"
-              value={visibleData?.qualityLead}
+              value={visibleData?.qualityLeads}
             />
             <MetricCard title="CAC" value={visibleData?.cac} />
           </div>
