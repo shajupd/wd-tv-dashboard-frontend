@@ -1,37 +1,38 @@
 export class AppUtils {
     static getScoreColor = (score: number) => {
         if (!score || score == -1) return 'border border-gray-500'
-        if (score >= 25) return 'bg-green-500'
-        if (score >= 20) return 'bg-green-400'
-        if (score >= 15) return 'bg-yellow-500'
-
+        if (score >= 21) return 'bg-green-500'
+        if (score >= 11) return 'bg-orange-400'
+        if (score <= 10) return 'bg-red-500'
         return 'bg-red-500'
     }
 
     static getScoreColorOverall = (score: number) => {
         if (!score || score == -1) return 'border border-gray-500'
-        if (score >= 90) return 'bg-green-500'
-        if (score >= 80) return 'bg-green-400'
-        if (score >= 70) return 'bg-yellow-500'
-        if (score >= 60) return 'bg-yellow-400'
+        // if (score >= 90) return 'bg-green-500'
+        // if (score >= 80) return 'bg-green-400'
+        // if (score >= 70) return 'bg-yellow-500'
+        // if (score >= 60) return 'bg-yellow-400'
 
+        if (score >= 67) return 'bg-green-500'
+        if (score >= 34) return 'bg-orange-400'
+        if (score < 33) return 'bg-red-400'
         return 'bg-red-500'
+
     }
 
     static getScoreTextColor = (score: number) => {
         if (!score || score == -1) return 'text-gray-500'
-        if (score >= 25) return 'text-green-500'
-        if (score >= 20) return 'text-green-400'
-        if (score >= 15) return 'text-yellow-500'
+        if (score >= 21) return 'text-green-500'
+        if (score >= 11) return 'text-orange-400'
+        if (score >= 10) return 'text-red-500'
         return 'text-red-500'
     }
 
     static getScoreTextColorOverall = (score: number) => {
-        if (!score || score == -1) return 'text-gray-500'
-        if (score >= 90) return 'text-green-500'
-        if (score >= 80) return 'text-green-400'
-        if (score >= 70) return 'text-yellow-500'
-        if (score >= 60) return 'text-yellow-400'
+        if (score >= 67) return 'text-green-500'
+        if (score >= 34) return 'text-orange-400'
+        if (score < 33) return 'text-red-400'
         return 'text-red-500'
     }
 

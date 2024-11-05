@@ -79,9 +79,9 @@ const MainPage = () => {
 
       
       if (lastMonthData) {
-        if (lastMonthData.overallScore < 60) {
+        if (lastMonthData.overallScore < 34) {
           poorHealth++;
-        } else if (lastMonthData.overallScore < 80) {
+        } else if (lastMonthData.overallScore < 67) {
           avgHealth++;
         } else {
           goodHealth++;
