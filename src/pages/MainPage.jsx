@@ -17,6 +17,7 @@ const MainPage = () => {
   const scrollRef = useRef(null);
   const navigate = useNavigate();
   const { data } = useClientList();
+   const { data:insightData } = useClientScoreHistory();
 
   const [selectedClientId, setSelectedClientId] = useState(
     data ? data[0]?._id : ""
@@ -64,11 +65,45 @@ const MainPage = () => {
     }
   }, [selectedClientId]);
 
+  const lastMonthConsolidatedData = useMemo(() => { 
+   
+    let poorHealth = 0;
+    let avgHealth = 0;
+    let goodHealth = 0;
+
+    insightData?.forEach((eachReport) => {
+      const lastMonthData = eachReport?.scores?.find(
+        (score) =>
+          score?.month === dayjs().subtract(2, "months").format("MMM YYYY")
+      );
+
+      
+      if (lastMonthData) {
+        if (lastMonthData.overallScore < 60) {
+          poorHealth++;
+        } else if (lastMonthData.overallScore < 80) {
+          avgHealth++;
+        } else {
+          goodHealth++;
+        }
+      }
+    });
+     
+
+    return {
+      poorHealth,
+      avgHealth,
+      goodHealth,
+    };
+  }, [insightData]);
+  
+   console.log("🚀 ~ lastMonthConsolidatedData ~ lastMonthConsolidatedData:", lastMonthConsolidatedData)
+
   return (
     <div className="w-screen h-dvh bg-black border-black text-white overflow-auto flex flex-col items-center justify-center p-10 gap-3">
       <h1 className="text-4xl font-bold mb-4 text-center text-gray-100 flex flex-row items-center justify-between gap-5 w-full mt-5">
         <div className="flex flex-col items-center justify-center text-gray-100 text-3xl">
-          {dayjs().subtract(1, "month").format("MMMM YYYY")}
+          {dayjs().subtract(2, "month").format("MMMM YYYY")}
         </div>
         <span>
           <span className="animate-pulse ">❤️</span> Customer Health Score
@@ -110,15 +145,21 @@ const MainPage = () => {
             <div className="flex flex-row items-center justify-center gap-16">
               <div className="text-2xl">
                 <b>Poor Health - </b>
-                <span>2 (10%)</span>
+                <span>{
+                  lastMonthConsolidatedData?.poorHealth
+                } (10%)</span>
               </div>
               <div className="text-2xl">
                 <b>Avg Health - </b>
-                <span>4 (15%)</span>
+                <span>{
+                  lastMonthConsolidatedData?.avgHealth
+                } (15%)</span>
               </div>
               <div className="text-2xl">
                 <b>Good Health - </b>
-                <span>1 (8%)</span>
+                <span>{
+                  lastMonthConsolidatedData?.goodHealth
+                } (8%)</span>
               </div>
             </div>
           </div>
@@ -176,42 +217,14 @@ const ClientList = ({ selectedClientId, onSelectClient, scrollRef }) => {
               </div>
             </div>
           ))}
-      {/* {clients.map((client) => (
-        <div
-          key={client.id}
-          className={`flex justify-between items-center p-2 mb-2 rounded cursor-pointer ${
-            client.id === selectedClientId ? "bg-gray-700" : "hover:bg-gray-800"
-          }`}
-          onClick={() => onSelectClient(client.id)}
-        >
-          <span className="text-gray-300">{client.name}</span>
-          <div className="flex items-center">
-            {client.scoreHistory.map((score, index) => (
-              <div
-                key={index}
-                className={`w-6 h-6 rounded-full ml-1 ${AppUtils.getScoreColor(
-                  score
-                )}`}
-                title={`Month ${index + 1}: ${score}`}
-              />
-            ))}
-            <span
-              className={`ml-2 font-bold ${AppUtils.getScoreTextColor(
-                client.currentScore
-              )}`}
-            >
-              {client.currentScore}
-            </span>
-          </div>
-        </div>
-      ))} */}
+      
     </div>
   );
 };
 
 const ClientDashboard = ({ selectedClientId }) => {
   const { data } = useClientScoreHistory();
-  console.log("🚀 ~ ClientDashboard ~ data:", data)
+ 
   const activeData = useMemo(() => {
     return data?.find((eachReport) => {
       return eachReport?.client._id === selectedClientId;
