@@ -97,7 +97,7 @@ const MainPage = () => {
     };
   }, [insightData]);
   
-   console.log("🚀 ~ lastMonthConsolidatedData ~ lastMonthConsolidatedData:", lastMonthConsolidatedData)
+  const totalClients = insightData?.length || 0;
 
   return (
     <div className="w-screen h-dvh bg-black border-black text-white overflow-auto flex flex-col items-center justify-center p-10 gap-3">
@@ -147,19 +147,32 @@ const MainPage = () => {
                 <b>Poor Health - </b>
                 <span>{
                   lastMonthConsolidatedData?.poorHealth
-                } (10%)</span>
+                } (
+                  {
+                    ((lastMonthConsolidatedData?.poorHealth / totalClients) * 100) .toFixed(1)
+                  }%
+                )</span>
               </div>
               <div className="text-2xl">
                 <b>Avg Health - </b>
                 <span>{
                   lastMonthConsolidatedData?.avgHealth
-                } (15%)</span>
+                } (
+                  {
+                    ((lastMonthConsolidatedData?.avgHealth / totalClients) * 100).toFixed(1)
+                  }%
+                )</span>
               </div>
               <div className="text-2xl">
                 <b>Good Health - </b>
                 <span>{
                   lastMonthConsolidatedData?.goodHealth
-                } (8%)</span>
+                } ({
+                   
+                      ((lastMonthConsolidatedData?.goodHealth / totalClients) * 100).toFixed(1)
+                  
+
+                }%)</span>
               </div>
             </div>
           </div>
