@@ -9,11 +9,6 @@ export class AppUtils {
 
     static getScoreColorOverall = (score: number) => {
         if (!score || score == -1) return 'border border-gray-500'
-        // if (score >= 90) return 'bg-green-500'
-        // if (score >= 80) return 'bg-green-400'
-        // if (score >= 70) return 'bg-yellow-500'
-        // if (score >= 60) return 'bg-yellow-400'
-
         if (score >= 67) return 'bg-green-500'
         if (score >= 34) return 'bg-orange-400'
         if (score < 33) return 'bg-red-400'

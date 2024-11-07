@@ -9,7 +9,7 @@ export const MetricCard = ({ title, value }) => (
       <div className=" text-gray-300">{title}</div>
     </CardHeader>
     <div className="p-2">
-      <p className={`text-4xl font-bold ${AppUtils.getScoreTextColor(value)}`}>
+      <p className={`text-2xl font-bold ${AppUtils.getScoreTextColor(value)}`}>
         {value ==-1?"N/A":value || 0}
       </p>
     </div>

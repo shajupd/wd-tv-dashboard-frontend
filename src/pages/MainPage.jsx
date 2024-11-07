@@ -100,9 +100,9 @@ const MainPage = () => {
   const totalClients = insightData?.length || 0;
 
   return (
-    <div className="w-screen h-dvh bg-black border-black text-white overflow-auto flex flex-col items-center justify-center p-10 gap-3">
-      <h1 className="text-4xl font-bold mb-4 text-center text-gray-100 flex flex-row items-center justify-between gap-5 w-full mt-5">
-        <div className="flex flex-col items-center justify-center text-gray-100 text-3xl">
+    <div className="w-screen h-dvh bg-black border-black text-white overflow-auto flex flex-col items-center justify-center p-10  gap-3">
+      <h1 className="text-2xl font-bold mb-4 text-center text-gray-100 flex flex-row items-center justify-between gap-5 w-full mt-5">
+        <div className="flex flex-col items-center justify-center text-gray-100 text-xl">
           {dayjs().subtract(2, "month").format("MMMM YYYY")}
         </div>
         <span>
@@ -119,7 +119,7 @@ const MainPage = () => {
       </h1>
       <div className="flex flex-row items-start justify-center w-full h-full gap-5">
         <div className="w-5/12 bg-gray-900 p-0 rounded-lg border border-gray-700 h-full flex flex-col items-start justify-start">
-          <h2 className="text-3xl font-bold mb-5 text-gray-100 border-b-[1px] border-gray-500 p-7 w-full">
+          <h2 className="text-2xl font-bold mb-5 text-gray-100 border-b-[1px] border-gray-500 p-7 w-full">
             Client Scores
           </h2>
           <ClientList
@@ -138,12 +138,12 @@ const MainPage = () => {
             selectedClientId={selectedClientId}
           />
           <div className=" bg-gray-900 rounded-lg border border-gray-700 w-full h-full flex flex-row items-center gap-10">
-            <div className="bg-red-500 p-6 rounded-lg text-2xl rounded-tr-none rounded-br-none">
+            <div className="bg-red-500 p-6 rounded-lg text-xl rounded-tr-none rounded-br-none">
               Last month
             </div>
 
             <div className="flex flex-row items-center justify-center gap-16">
-              <div className="text-2xl">
+              <div className="text-lg">
                 <b>Poor Health - </b>
                 <span>{
                   lastMonthConsolidatedData?.poorHealth
@@ -153,7 +153,7 @@ const MainPage = () => {
                   }%
                 )</span>
               </div>
-              <div className="text-2xl">
+              <div className="text-lg">
                 <b>Avg Health - </b>
                 <span>{
                   lastMonthConsolidatedData?.avgHealth
@@ -163,7 +163,7 @@ const MainPage = () => {
                   }%
                 )</span>
               </div>
-              <div className="text-2xl">
+              <div className="text-lg">
                 <b>Good Health - </b>
                 <span>{
                   lastMonthConsolidatedData?.goodHealth
@@ -200,14 +200,14 @@ const ClientList = ({ selectedClientId, onSelectClient, scrollRef }) => {
             <div
               id={eachReport?.client.id}
               key={eachReport?.client.id}
-              className={`flex justify-between items-center p-4 mb-0 rounded-lg cursor-pointer ${
+              className={`flex justify-between items-center p-2 px-4 mb-0 rounded-lg cursor-pointer ${
                 eachReport?.client._id === selectedClientId
                   ? "bg-gray-700"
                   : "hover:bg-gray-800"
               }`}
               onClick={() => onSelectClient(eachReport?.client._id)}
             >
-              <span className="text-gray-300 text-xl text-start flex flex-row items-center gap-5">
+              <span className="text-gray-300 text-[16px] text-start flex flex-row items-center gap-5 ">
                 <img
                   className="h-10 object-contain aspect-square bg-white rounded-2xl p-1"
                   src={eachReport?.client?.imageUrl}
@@ -219,7 +219,7 @@ const ClientList = ({ selectedClientId, onSelectClient, scrollRef }) => {
                 {eachReport?.scores?.map((score, index) => (
                   <div
                     key={index}
-                    className={`w-10 aspect-square rounded-full ml-1 text-[15px] flex items-center justify-center ${AppUtils.getScoreColorOverall(
+                    className={`w-8 aspect-square rounded-full ml-1 text-[13px] flex items-center justify-center  ${AppUtils.getScoreColorOverall(
                       score?.overallScore
                     )}`}
                     title={`Month ${index + 1}: ${score}`}
@@ -268,10 +268,10 @@ const ClientDashboard = ({ selectedClientId }) => {
   }, [activeData]);
 
   return (
-    <div className="p-8 bg-gray-900 rounded-lg border border-gray-700 w-full h-full flex flex-col items-start gap-5">
-      <h2 className="text-3xl font-bold mb-4 text-gray-100 flex flex-row items-center gap-5">
+    <div className="p-4 bg-gray-900 rounded-lg border border-gray-700 w-full h-full flex flex-col items-start gap-3">
+      <h2 className="text-2xl font-bold mb-2 text-gray-100 flex flex-row items-center gap-5">
         <img
-          className="h-14 object-contain aspect-square bg-white rounded-2xl p-1"
+          className="h-12 object-contain aspect-square bg-white rounded-2xl p-1"
           src={activeData?.client?.imageUrl}
           alt=""
         />
@@ -284,7 +284,7 @@ const ClientDashboard = ({ selectedClientId }) => {
           </CardHeader>
           <div className="p-2">
             <p
-              className={`text-6xl font-bold ${AppUtils.getScoreTextColorOverall(
+              className={`text-4xl font-bold ${AppUtils.getScoreTextColorOverall(
                 visibleData?.overallScore
               )}`}
             >
@@ -292,14 +292,14 @@ const ClientDashboard = ({ selectedClientId }) => {
             </p>
           </div>
         </Card>
-        <div className="w-full text-xl">
+        <div className="w-full text-lg">
           <LineGraph data={lineGraphData} />
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 w-full mt-8">
+      <div className="grid grid-cols-3 gap-4 w-full mt-0">
         <div>
-          <h3 className="text-2xl font-semibold mb-2 text-gray-300">
+          <h3 className="text-lg font-semibold mb-2 text-gray-300">
             Marketing
           </h3>
           <div className="grid gap-4">
@@ -312,7 +312,7 @@ const ClientDashboard = ({ selectedClientId }) => {
           </div>
         </div>
         <div>
-          <h3 className="text-2xl font-semibold mb-2 text-gray-300">Finance</h3>
+          <h3 className="text-lg font-semibold mb-2 text-gray-300">Finance</h3>
           <div className="grid gap-4">
             <MetricCard title="Pay on Time" value={visibleData?.payOnTime} />
             <MetricCard
@@ -326,7 +326,7 @@ const ClientDashboard = ({ selectedClientId }) => {
           </div>
         </div>
         <div>
-          <h3 className="text-2xl font-semibold mb-2 text-gray-300">
+          <h3 className="text-lg font-semibold mb-2 text-gray-300">
             Engagement
           </h3>
           <div className="grid gap-4">
